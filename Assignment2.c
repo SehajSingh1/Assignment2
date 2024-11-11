@@ -41,9 +41,34 @@ void displayEmployee(struct Employee *employees_value, int num_employee) {
         
         printf("\n");
         
-    }    
+    } 
+}   
 
+void searchEmployeeByID(struct Employee *employees_value, int num_employee) {
+    //Searches for an employee by ID and displays their details if found.
+    int success = 0;
+    int user_input;
+    printf("\nPlease enter employee ID: ");
+    scanf("%d", &user_input);
+
+    for(int i=0; i < num_employee ; i++) {
+            if(user_input == employees_value->EmployeeId) 
+            {    printf("\nId found = %d", user_input);
+                 printf("\nName: %s\n", employees_value->Name);
+                 printf("ID: %d\n", employees_value->EmployeeId);
+
+                    success = 1;
+                    break;
+            }
+            employees_value++;
+        }
+         if (success == 0) {
+            printf("\nId Not found! ");
+        } else {
+            printf("Invalid---------------------");
+        }
 }
+
 
 int main() {
     struct Employee read_employees[20];
@@ -73,7 +98,7 @@ int main() {
             displayEmployee(read_employees, num_of_employee);
         }
         else if(menu == 4) {
-             
+             searchEmployeeByID(read_employees, num_of_employee);
         }
         else if(menu == 5) {
              
