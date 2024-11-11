@@ -9,15 +9,45 @@ struct Employee {
     float salary;
 };
 
-void addNewEmployee(struct Employee *employees_value) {
+void addNewEmployee(struct Employee *employees_value, int num_employee) {
     //Add a new employee- Implement a function to input employee data into an array of ‘Employee’ structures.
-    printf("Enter employee name: ");
+    //Asked Employee Name
+    printf("Enter Employee Name: ");
     scanf("%s", employees_value->Name);
+    //Asked Employee ID
+    printf("Enter Employee ID: ");
+    scanf("%d", &employees_value->EmployeeId);
+    //Asked Employee Gender
+    printf("Enter Employee Gender: ");
+    scanf("%s", employees_value->Gender);
+    //Asked Employee Ethnicity
+    printf("Enter Employee Ethnicity: ");
+    scanf("%s", employees_value->Ethnicity);
+    //Asked Employee Salary
+    printf("Enter Employee Salary: ");
+    scanf("%f", &employees_value->salary);    
     
+    employees_value++;
+}
+
+void displayEmployee(struct Employee *employees_value, int num_employee) {
+    //Display employees- This can be based on gender and/or ethnicity or all employees in the company
+    for(int i=0; i< num_employee; i++) {
+        printf("Name: %s\n", employees_value->Name); // Access the array correctly
+        printf("ID: %d\n", employees_value->EmployeeId);
+        printf("Gender: %s\n", employees_value->Gender);
+        printf("Ethnicity: %s\n", employees_value->Ethnicity);
+        printf("Salary: %.2f\n", employees_value->salary);
+        
+        printf("\n");
+        
+    }    
+
 }
 
 int main() {
-    struct Employee read_employees;
+    struct Employee read_employees[20];
+    int num_of_employee = 0;
     int menu;
     //Menu Options
     do
@@ -28,13 +58,19 @@ int main() {
         scanf("%d", &menu);
         
         if (menu == 1) {
-           addNewEmployee(&read_employees);
+           // Add a new employee
+           if (num_of_employee < 20) { // Check if there's space in the array
+               addNewEmployee(read_employees, num_of_employee);
+               num_of_employee++; // Increase the employee count
+           } else {
+               printf("Employee list is full!\n");
+           }
         }   
         else if(menu == 2) {
          
         }
         else if(menu == 3) {
-            
+            displayEmployee(read_employees, num_of_employee);
         }
         else if(menu == 4) {
              
