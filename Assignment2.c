@@ -1,113 +1,260 @@
 #include <stdio.h>
+#include <stdbool.h>
+#include <string.h>
 
-//Defined a "Employee" struct
+#define MAX_EMPLOYEES 100 // Maximum number of employees
+
+// Define the Employee structure
 struct Employee {
-    int EmployeeId;
-    char Name[50];
-    char Gender[50];
-    char Ethnicity[50];
+    int id;
+    char name[50];
+    char gender[20];
+    char ethnicity[50];
     float salary;
 };
 
-void addNewEmployee(struct Employee *employees_value, int num_employee) {
-    //Add a new employee- Implement a function to input employee data into an array of ‘Employee’ structures.
-    //Asked Employee Name
+//Sehajdeep did this function-----------------------------------------
+// Add a new employee
+void addNewEmployee(struct Employee* employees_value) { 
     printf("Enter Employee Name: ");
-    scanf("%s", employees_value->Name);
-    //Asked Employee ID
+    scanf("%s", employees_value->name);
     printf("Enter Employee ID: ");
-    scanf("%d", &employees_value->EmployeeId);
-    //Asked Employee Gender
+    scanf("%d", &employees_value->id);
     printf("Enter Employee Gender: ");
-    scanf("%s", employees_value->Gender);
-    //Asked Employee Ethnicity
+    scanf("%s", employees_value->gender);
     printf("Enter Employee Ethnicity: ");
-    scanf("%s", employees_value->Ethnicity);
-    //Asked Employee Salary
+    scanf("%s", employees_value->ethnicity);
     printf("Enter Employee Salary: ");
-    scanf("%f", &employees_value->salary);    
-    
-    employees_value++;
+    scanf("%f", &employees_value->salary);
 }
 
-void displayEmployee(struct Employee *employees_value, int num_employee) {
-    //Display employees- This can be based on gender and/or ethnicity or all employees in the company
-    for(int i=0; i< num_employee; i++) {
-        printf("Name: %s\n", employees_value->Name); // Access the array correctly
-        printf("ID: %d\n", employees_value->EmployeeId);
-        printf("Gender: %s\n", employees_value->Gender);
-        printf("Ethnicity: %s\n", employees_value->Ethnicity);
-        printf("Salary: %.2f\n", employees_value->salary);
-        
-        printf("\n");
-        
-    } 
-}   
+//Samuel did this function-----------------------------------------------
+// Delete an employee
+void deleteEmployee(struct Employee employees[], int* num_employees) {
+    int emp_id_del;
+    bool delete_flag = true;
 
-void searchEmployeeByID(struct Employee *employees_value, int num_employee) {
-    //Searches for an employee by ID and displays their details if found.
-    int success = 0;
+    printf("Enter the Employee ID of the employee you want to delete: ");
+    scanf("%d", &emp_id_del);
+
+    bool found = false;
+    for (int i = 0; i < *num_employees; i++) {
+        if (employees[i].id == emp_id_del) {
+            // Shift all subsequent employees up by one position
+            for (int j = i; j < *num_employees - 1; j++) {
+                employees[j] = employees[j + 1];
+            }
+            (*num_employees)--; // Reduce the employee count
+            printf("Employee with ID %d has been deleted.\n", emp_id_del);
+            found = true;
+            break;
+        }
+    }
+
+    if (!found) {
+        printf("Employee ID %d not found in the database.\n", emp_id_del);
+    }
+}
+
+//Sehajdeep did this function---------------------------------------------
+// Display employees
+void displayEmployee(struct Employee* employees, int num_employee) {
+    for (int i = 0; i < num_employee; i++) {
+        printf("Name: %s\n", (employees + i)->name);
+        printf("ID: %d\n", (employees + i)->id);
+        printf("Gender: %s\n", (employees + i)->gender);
+        printf("Ethnicity: %s\n", (employees + i)->ethnicity);
+        printf("Salary: %.2f\n", (employees + i)->salary);
+        printf("\n");
+    }
+}  
+
+//Sehajdeep did this function-------------------------------------------
+// For searching employee by ID
+void searchEmployeeByID(struct Employee* employees, int num_employee) {
     int user_input;
     printf("\nPlease enter employee ID: ");
     scanf("%d", &user_input);
 
-    for(int i=0; i < num_employee ; i++) {
-            if(user_input == employees_value->EmployeeId) 
-            {    printf("\nId found = %d", user_input);
-                 printf("\nName: %s\n", employees_value->Name);
-                 printf("ID: %d\n", employees_value->EmployeeId);
+    bool found = false;
+    for (int i = 0; i < num_employee; i++) {
+        if ((employees + i)->id == user_input) {
+            printf("\nEmployee Found:\n");
+            printf("Name: %s\n", (employees + i)->name);
+            printf("ID: %d\n", (employees + i)->id);
+            printf("Gender: %s\n", (employees + i)->gender);
+            printf("Ethnicity: %s\n", (employees + i)->ethnicity);
+            printf("Salary: %.2f\n", (employees + i)->salary);
+            found = true;
+            break;
+        }
+    }
 
-                    success = 1;
-                    break;
+    if (!found) {
+        printf("\nEmployee with ID %d not found.\n", user_input);
+    }
+}
+
+//Samuel did this function--------------------------------------------------
+//For calculating average salary
+void calculateAverageSalary(struct Employee* employees, int num_employees) {
+    char gender[20];
+    char ethnicity[50];
+    int user_choice;
+
+    printf("\nCalculate Average Salary:\n");
+    printf("1. Average Salary Based On Gender\n");
+    printf("2. Average Salary Based By Ethnicity\n");
+    printf("3. Average Salary Based On Both Gender and Ethnicity\n");
+    printf("Please choose an option: ");
+    scanf("%d", &user_choice);
+
+    float total_salary = 0.0;
+    int count = 0;
+
+    if (user_choice == 1) { // To filter by Gender
+        printf("Enter Gender to calculate: ");
+        scanf("%s", gender);
+
+        for (int i = 0; i < num_employees; i++) {
+            if (strcmp((employees + i)->gender, gender) == 0) {
+                total_salary += (employees + i)->salary;
+                count++;
             }
-            employees_value++;
         }
-         if (success == 0) {
-            printf("\nId Not found! ");
-        } else {
-            printf("Invalid---------------------");
+    } else if (user_choice == 2) {  //To filter by Ethnicity
+        printf("Enter Ethnicity to calculate: ");
+        scanf("%s", ethnicity);
+
+        for (int i = 0; i < num_employees; i++) {
+            if (strcmp((employees + i)->ethnicity, ethnicity) == 0) {
+                total_salary += (employees + i)->salary;
+                count++;
+            }
         }
+    } else if (user_choice == 3) { // Filter by Both Gender and Ethnicity
+        printf("Enter Gender to calculate: ");
+        scanf("%s", gender);
+        printf("Enter Ethnicity to calculate: ");
+        scanf("%s", ethnicity);
+
+        for (int i = 0; i < num_employees; i++) {
+            if (strcmp((employees + i)->gender, gender) == 0 &&
+                strcmp((employees + i)->ethnicity, ethnicity) == 0) {
+                total_salary += (employees + i)->salary;
+                count++;
+            }
+        }
+    } else {
+        printf("Invalid option.\n");
+        return;
+    }
+
+    if (count > 0) {
+        printf("\nAverage Salary: %.2f\n", total_salary / count);
+    } else {
+        printf("\nNo employees match the given criteria.\n");
+    }
+}
+
+//Sehajdeep and Samuel we both did this function--------------------------------------------------
+//for displaying comparision results depending on gender or ethnicity
+void displayComparisonResults(struct Employee* employees, int num_employees) {
+    char filter_gender[20];
+    char filter_ethnicity[50];
+    int user_choice;
+
+    printf("\nDisplay Comparison Results:\n");
+    printf("1. Compare Salaries by Gender\n");
+    printf("2. Compare Salaries by Ethnicity\n");
+    printf("Choose an option: ");
+    scanf("%d", &user_choice);
+
+    float total1 = 0.0, total2 = 0.0;
+    int count1 = 0, count2 = 0;
+
+    if (user_choice == 1) { // To compare by Gender
+        printf("Enter Gender to filter (e.g., Male, Female, Non-Binary): ");
+        scanf("%s", filter_gender);
+
+        for (int i = 0; i < num_employees; i++) {
+            if (strcmp(employees[i].gender, filter_gender) == 0) {
+                total1 += employees[i].salary;
+                count1++;
+            } else {
+                total2 += employees[i].salary;
+                count2++;
+            }
+        }
+
+        printf("\nComparison Results by Gender:\n");
+        if (count1 > 0) printf("Average Salary for %s: %.2f\n", filter_gender, total1 / count1);
+        if (count2 > 0) printf("Average Salary for Other Genders: %.2f\n", total2 / count2);
+
+    } else if (user_choice == 2) { // To compare by Ethnicity
+        printf("Enter Ethnicity to filter (e.g., Asian, Black, Caucasian): ");
+        scanf("%s", filter_ethnicity);
+
+        for (int i = 0; i < num_employees; i++) {
+            if (strcmp(employees[i].ethnicity, filter_ethnicity) == 0) {
+                total1 += employees[i].salary;
+                count1++;
+            } else {
+                total2 += employees[i].salary;
+                count2++;
+            }
+        }
+
+        printf("\nComparison Results by Ethnicity:\n");
+        if (count1 > 0) printf("Average Salary for %s: %.2f\n", filter_ethnicity, total1 / count1);
+        if (count2 > 0) printf("Average Salary for Other Ethnicities: %.2f\n", total2 / count2);
+
+    } else {
+        printf("Invalid option. Returning to the menu.\n");
+    }
 }
 
 
 int main() {
-    struct Employee read_employees[20];
-    int num_of_employee = 0;
+    struct Employee employees[MAX_EMPLOYEES];
+    int num_employees = 0;
     int menu;
-    //Menu Options
-    do
-    {   
-        //Menu
-        printf("\nMenu: \n1. Add a new employee \n2. Delete an employee \n3. Display Employees \n4.Search Employees by ID \n5. Calculate Average Salaries Based on Gender or Ethnicity \n6. Diplsay Comparision Results \n0. Exit");
-        printf("\nPlease choose one option: ");
+
+    do {
+        printf("\nMenu:\n");
+        printf("1. Add a new employee\n");
+        printf("2. Delete an employee\n");
+        printf("3. Display employees\n");
+        printf("4. Search employee by ID\n");
+        printf("5. Calculate average salaries based on gender and/or ethnicity\n");
+        printf("6. Display comparision results");
+        printf("0. Exit\n");
+        printf("Choose an option: ");
         scanf("%d", &menu);
-        
-        if (menu == 1) {
-           // Add a new employee
-           if (num_of_employee < 20) { // Check if there's space in the array
-               addNewEmployee(read_employees, num_of_employee);
-               num_of_employee++; // Increase the employee count
-           } else {
-               printf("Employee list is full!\n");
-           }
-        }   
-        else if(menu == 2) {
-         
+
+    if (menu == 1) {
+            // For adding a new employee
+            if (num_employees < MAX_EMPLOYEES) {
+                addNewEmployee(&employees[num_employees]);
+                num_employees++;
+            } else {
+                printf("Employee list is full!\n");
+            }
+        } else if (menu == 2) {
+            deleteEmployee(employees, &num_employees);
+        } else if (menu == 3) {
+            displayEmployee(employees, num_employees);
+        } else if (menu == 4) {
+            searchEmployeeByID(employees, num_employees);
+        } else if (menu == 5) {
+            calculateAverageSalary(employees, num_employees);
+        } else if (menu == 6) {
+            displayComparisonResults(employees, num_employees);
+        } else if (menu != 0) {
+            printf("Invalid option. Try again.\n");
         }
-        else if(menu == 3) {
-            displayEmployee(read_employees, num_of_employee);
-        }
-        else if(menu == 4) {
-             searchEmployeeByID(read_employees, num_of_employee);
-        }
-        else if(menu == 5) {
-             
-        }
-        else if(menu == 6) {
-             
-        }
-    
     } while (menu != 0);
+
 
     return 0;
 }
